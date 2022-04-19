@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <math.h>
+double f1(int a,double x){return sqrt(a-x*x);}
+double f2(int a,double x){return (a*x*x*x+7*x)/sqrt(a+x);}
+double abs(double d)
+{
+    if(d<0)
+        d*=-1;
+    return d;
+}
+double area(double (*f)(int,double),int n,int p,int q,int a){
+    long double gap = (double)(q-p)/n;
+    double areas=0;
+    int i=0;
+    double total=0;
+    do {
+        total += abs((*f)(a,p+gap*(++i)));
+    }while(i<n-1);
+    areas=(total*2+(*f)(a,p)+(*f)(a,q))*gap/2;
+    return areas;
+}
+
+int main(){
+    int er;
+    int n=1;
+    int a;
+    float p,q;
+    int choiceFunction,cont;
+    do{
+        scanf(" %d",&choiceFunction);
+        if(choiceFunction==0)
+            break;
+        scanf(" %d",&a);
+        scanf(" %f",&p);
+        scanf(" %f",&q);
+        scanf(" %d",&er);
+        double Result;
+        double lastResult;
+        double test;
+        double err=pow(10,0-er);
+        int temp;
+        if(p>q){
+            temp=p;
+            p=q;
+            q=temp;
+        }
+        switch(choiceFunction){
+            case 1:
+                n=1;
+                lastResult=area(f1,n,p,q,a);
+                n=n<<1;
+                Result=area(f1,n,p,q,a);
+                test = lastResult-Result;
+                if(test<0)test=0-test;
+                while(test>err){
+                    /*printf("L: %.12f\n",lastResult);
+                    printf("N: %.12f\n",Result);
+                    printf("n: %lld\n",n);*/
+                    lastResult=Result;
+                    n=n<<1;
+                    Result=area(f1,n,p,q,a);
+                    test = lastResult-Result;
+                    if(test<0)test=0-test;
+                }
+                break;
+            case 2:
+                n=1;
+                lastResult=area(f2,n,p,q,a);
+                n=n<<1;
+                Result=area(f2,n,p,q,a);
+                test = lastResult-Result;
+                if(test<0)test=0-test;
+                while(test>err){
+                    /*printf("L: %.12f\n",lastResult);
+                    printf("N: %.12f\n",Result);
+                    printf("n: %lld\n",n);*/
+                    lastResult=Result;
+                    n=n<<1;
+                    Result=area(f2,n,p,q,a);
+                    test = lastResult-Result;
+                    if(test<0)test=0-test;
+                }
+                break;
+        }
+        printf("%.12f\n",Result);
+    }while(1);
+    return 0;
+}
